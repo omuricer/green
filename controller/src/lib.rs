@@ -1,4 +1,5 @@
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use domain::model::Item;
 
 #[get("/")]
 async fn hello() -> impl Responder {

@@ -1,8 +1,12 @@
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
-use domain::model::Item;
+use domain::repository::ItemRepository;
+use infrastructure::in_memory::repository::ItemRepository as ItemRepositoryImpl;
 
 #[get("/")]
 async fn hello() -> impl Responder {
+    let item_repository = di();
+    let item = item_repository.find(&1);
+    println!("Item id is {}", item.id);
     HttpResponse::Ok().body("Hello world!")
 }
 
@@ -21,4 +25,9 @@ mod tests {
     fn it_works() {
         assert_eq!(2 + 2, 4);
     }
+}
+
+// TODO: ここがDI。依存関係はどこかでまとめてやる
+fn di() -> impl ItemRepository {
+    ItemRepositoryImpl::new()
 }

@@ -1,4 +1,6 @@
-pub mod Item;
+pub mod item_repository;
+pub use item_repository::*;
+
 #[cfg(test)]
 mod tests {
     #[test]

@@ -1,7 +1,5 @@
-pub mod entity;
-pub use entity::*;
-pub mod repository;
-pub use repository::*;
+pub mod item;
+pub use item::*;
 
 #[cfg(test)]
 mod tests {

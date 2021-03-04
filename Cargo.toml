@@ -4,4 +4,5 @@ members = [
     "app",
     "controller",
     "domain",
+    "infrastructure",
 ]

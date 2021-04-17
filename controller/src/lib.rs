@@ -7,8 +7,12 @@ use infrastructure::in_memory;
 #[get("/")]
 async fn hello() -> impl Responder {
     let item_repository = di();
-    let item = item_repository.find(&1).expect("error!");
-    println!("Item id is {}", item.id);
+
+    let item_id = 1;
+    match item_repository.find(&item_id) {
+        None => println!("Item is not found! ID: {}", &item_id),
+        Some(item) => println!("Item id is {}", item.id),
+    };
     HttpResponse::Ok().body("Hello world!")
 }
 

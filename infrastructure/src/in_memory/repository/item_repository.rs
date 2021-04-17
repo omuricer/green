@@ -39,11 +39,6 @@ mod tests {
 
     fn some_models() -> HashMap<i32, Item> {
         let mut models: HashMap<i32, Item> = HashMap::new();
-        // let mut aaa = (1..11).map(|id| Item {
-        //     id: id,
-        //     name: String::from("名前"),
-        //     name_en: String::from("name"),
-        // });
         for id in 1..11 {
             let item = Item {
                 id: id,
@@ -56,12 +51,10 @@ mod tests {
     }
 
     #[test]
-    fn repository_is_addable_once() {
+    fn repository_is_addable() {
         let model = one_model();
         let mut r = ItemRepository::new();
         r.add(model.clone());
-        let item = r.find(&model.id).expect("error!");
-        assert_eq!(model, *item);
     }
 
     #[test]
@@ -71,7 +64,24 @@ mod tests {
         for model in models.values() {
             r.add(model.clone());
         }
-        let items = r.all();
-        assert_eq!(models, items);
+    }
+
+    #[test]
+    fn repository_is_gettable_all() {
+        let models = some_models();
+        let mut r = ItemRepository::new();
+        for model in models.values() {
+            r.add(model.clone());
+        }
+        assert_eq!(models, r.all());
+    }
+
+    #[test]
+    fn repository_is_findable() {
+        let model = one_model();
+        let mut r = ItemRepository::new();
+        r.add(model.clone());
+        let actual = r.find(&model.id).expect("error!");
+        assert_eq!(&model, actual);
     }
 }

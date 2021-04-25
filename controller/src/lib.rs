@@ -22,7 +22,7 @@ async fn echo(req_body: String) -> impl Responder {
 }
 
 pub async fn manual_hello() -> impl Responder {
-    HttpResponse::Ok().body("Hey there!")
+    HttpResponse::Ok().body("Hey there!!!")
 }
 
 #[cfg(test)]

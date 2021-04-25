@@ -12,8 +12,12 @@ impl RepositoryTrait<Item> for ItemRepository {
             map: HashMap::new(),
         }
     }
-    fn add(&mut self, model: Item) {
+    fn add(&mut self, model: Item) -> Result<(), String> {
+        if self.map.contains_key(&model.id) {
+            return Err(String::from("Duplicate ID!"));
+        }
         self.map.insert(model.id, model);
+        return Ok(());
     }
     fn all(&self) -> HashMap<i32, Item> {
         self.map.clone()
@@ -51,37 +55,63 @@ mod tests {
     }
 
     #[test]
-    fn repository_is_addable() {
-        let model = one_model();
+    fn addable() {
         let mut r = ItemRepository::new();
-        r.add(model.clone());
+        let actual = r.add(one_model().clone());
+        assert_eq!(Ok(()), actual);
+    }
+    #[test]
+    fn addable2() {
+        let mut r = ItemRepository::new();
+        let mut actual = r.add(one_model().clone());
+        assert_eq!(Ok(()), actual);
+        actual = r.add(one_model().clone());
+        assert_eq!(Err(String::from("Duplicate ID!")), actual);
     }
 
     #[test]
-    fn repository_is_addable_consecutive() {
-        let models = some_models();
+    fn addable_consecutive() {
         let mut r = ItemRepository::new();
-        for model in models.values() {
-            r.add(model.clone());
+        for model in some_models().values() {
+            if let Err(err) = r.add(model.clone()) {
+                panic!("{}", err);
+            };
         }
     }
-
     #[test]
-    fn repository_is_gettable_all() {
+    fn gettable_all() {
         let models = some_models();
         let mut r = ItemRepository::new();
         for model in models.values() {
-            r.add(model.clone());
+            if let Err(err) = r.add(model.clone()) {
+                panic!("{}", err);
+            };
         }
         assert_eq!(models, r.all());
     }
-
     #[test]
-    fn repository_is_findable() {
+    fn all_returns_empty_hashmap_when_repository_not_exist() {
+        let expect: HashMap<i32, Item> = HashMap::new();
+
+        let r = ItemRepository::new();
+        let actual = r.all();
+        assert_eq!(expect, actual);
+    }
+    #[test]
+    fn findable() {
         let model = one_model();
         let mut r = ItemRepository::new();
-        r.add(model.clone());
+        if let Err(err) = r.add(model.clone()) {
+            panic!("{}", err);
+        };
         let actual = r.find(&model.id).expect("error!");
         assert_eq!(&model, actual);
+    }
+    #[test]
+    fn find_returns_none_when_id_not_exist() {
+        let none_id = 999999;
+        let r = ItemRepository::new();
+        let actual = r.find(&none_id);
+        assert_eq!(None, actual);
     }
 }
